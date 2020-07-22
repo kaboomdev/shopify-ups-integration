@@ -2,12 +2,10 @@ require("dotenv").config()
 const express = require("express")
 const ratingAPI = require('ups-shipping/lib/rating');
 const fs = require('fs');
-
+const path = require("path");
 const rating = new ratingAPI(process.env.ACCESSKEY, process.env.USERID, process.env.PASSWORD);
 
 rating.setJsonResponse(true);
-
-
 
 const app = express();
 
@@ -15,7 +13,25 @@ app.listen(5500, () => {
   console.log("Server started on port 5500");
 });
 
-app.get('/', (req, res) => {
+app.get("/", function(req, res) {
+  res.sendFile(path.join(__dirname + "/index.html"));
+});
+
+app.get('/api', (req, res) => {
+  
+  if (!(req.query.from && req.query.to && req.query.weight)) {
+    res.send({
+      error: 'Not enough parameters. The required parameters are: from, to, weight'
+    })
+    return
+  }
+  
+  if (+req.query.weight > 150) {
+    res.send({
+      error: 'This API doesn\'t support LTL shipping. The weight should be under 150 lbs'
+    })
+    return
+  }
   
   rating.makeRequest({
     customerContext: "Rating and Service",
@@ -79,7 +95,7 @@ app.get('/', (req, res) => {
     }
   }, function (data) {
     const rating = data.RatingServiceSelectionResponse.RatedShipment;
-    fs.writeFile('res.json', rating, 'utf8', ()=>console.log('Written to JSON'));
+
     res.send(rating)
   });
   

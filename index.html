@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<!-- Meta Tags -->
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Title -->
+	<title>UPS Integration</title>
+
+	<link rel="stylesheet" href="https://cdn.rawgit.com/Chalarangelo/mini.css/v3.0.1/dist/mini-default.min.css">
+
+	<!-- Internal CSS -->
+	<style>
+		*,
+		*::after,
+		*::before {
+			box-sizing: border-box;
+			padding: 0;
+			margin: 0;
+		}
+		
+		html {
+			font-family: Roboto;
+		}
+		
+		.container {
+			max-width: 992px;
+			width: 100%;
+			margin: auto;
+		}
+		
+		header {
+			background: var(--pre-color);
+			min-height: 25vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: #fff;
+		}
+		
+		
+		main {
+			margin: 50px 0;
+		}
+		
+		.content {
+			margin: 50px 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.content #loading, .content #response, .content #error{
+			display: none;
+		}
+		.content.loading #loading{
+			display: block;
+		}
+		.content.loaded #response{
+			display: block;
+		}
+		.content.loaded.error #response {
+			display: none;
+		}
+		.content.loaded.error #error {
+			display: block;
+		}
+		
+	</style>
+
+	<!-- Fonts Here -->
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+	<header>
+		<h1>UPS API implementation</h1>
+	</header>
+	<main>
+		<div class="container">
+			<form id="upsForm">
+				<fieldset class="text-center">
+					<legend>Enter details</legend>
+					<label for="from">From</label>
+					<input name="from" type="text" id="from" placeholder="10005"/>
+					<label for="to">To</label>
+					<input name="to" type="text" id="to" placeholder="91403"/>
+					<label for="weight">Weight(lbs)</label>
+					<input name="weight" type="number" id="weight" placeholder="1.0"/>
+					<input type="submit" class="primary"/>
+				</fieldset>
+			</form>
+			<pre>The API works only for US and package weight less than 150 lbs</pre>
+			<div class="content">
+				<div id="loading" class="spinner primary"></div>
+				<div id="response">
+					<h1>Rate: <span></span></h1>
+				</div>
+				<div id="error" class="card error fluid"><div class="section"><h3>Error</h3><p></p></div></div>
+			</div>
+		</div>
+	</main>
+	
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+	<script>
+		$(document).ready(()=>{
+			$('#upsForm').submit(function(e){
+				e.preventDefault();
+				const form = $(this).serialize()
+				const $content = $('.content')
+				const $responseEl = $('#response h1 span');
+				const $errorEl = $('#error p');
+				
+				$content.removeClass('loaded')
+				$content.removeClass('error')
+				
+				$content.addClass('loading')
+				
+				$.ajax({
+					type: "get",
+					url: "/api",
+					data: form,
+					dataType: "JSON",
+					success: function (response) {
+						
+						if (response.error) {
+							const text = response.error;
+							$content.addClass('error')
+							$errorEl.html(text);
+							
+						} else {
+							const text = response[0].TotalCharges[0].MonetaryValue[0] + "$";
+							$responseEl.html("<b>" + text + "</b>");
+						}
+						
+						
+					}, 
+					complete: function() {
+						$content.removeClass('loading')
+						$content.addClass('loaded')
+					}
+				});
+				
+			})
+			
+			
+			
+			
+		});
+	</script>
+</body>
+
+</html>
