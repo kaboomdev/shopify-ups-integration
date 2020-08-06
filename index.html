@@ -66,7 +66,19 @@
 		.content.loaded.error #error {
 			display: block;
 		}
-		
+		.text-center {
+			text-align: center;
+		}
+		form div {
+			margin: 0.5em 0;
+		}
+		input {
+			outline: none;
+		}
+		.centered {
+			align-items: center;
+			justify-content: center;
+		}
 	</style>
 
 	<!-- Fonts Here -->
@@ -83,13 +95,25 @@
 			<form id="upsForm">
 				<fieldset class="text-center">
 					<legend>Enter details</legend>
-					<label for="from">From</label>
-					<input name="from" type="text" id="from" placeholder="10005"/>
-					<label for="to">To</label>
-					<input name="to" type="text" id="to" placeholder="91403"/>
-					<label for="weight">Weight(lbs)</label>
-					<input name="weight" type="number" id="weight" placeholder="1.0"/>
-					<input type="submit" class="primary"/>
+					<div>
+						<label for="from">From</label>
+						<input name="from" type="text" id="from" placeholder="10005"/>
+						<label for="to">To</label>
+						<input name="to" type="text" id="to" placeholder="91403"/>
+						<label for="weight">Weight(lbs)</label>
+						<input name="weight" type="number" id="weight" placeholder="1.0"/>
+					</div>
+					<div class="row centered">
+						<div class="col">
+							<label for="dcisType">Signature Required?</label>
+						</div>
+						<div class="col">
+							<input type="checkbox" name="dcisType" autocomplete="off" id="dcisType">
+						</div>
+					</div>
+					<div class="text-center">	
+						<input type="submit" class="primary"/>
+					</div>
 				</fieldset>
 			</form>
 			<pre>The API works only for US and package weight less than 150 lbs</pre>

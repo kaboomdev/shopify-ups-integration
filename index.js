@@ -1,8 +1,8 @@
 require("dotenv").config()
 const express = require("express")
-const ratingAPI = require('ups-shipping/lib/rating');
 const fs = require('fs');
 const path = require("path");
+const ratingAPI = require('./ratingAPI');
 const rating = new ratingAPI(process.env.ACCESSKEY, process.env.USERID, process.env.PASSWORD);
 
 rating.setJsonResponse(true);
@@ -85,8 +85,9 @@ app.get('/api', (req, res) => {
       package: [
         {
           code: "02",
-          weight: req.query.weight
-        },
+          weight: req.query.weight,
+          dcisType: req.query.dcisType,
+        }
       ],
       schedule: {
         pickUpDay: "02",
