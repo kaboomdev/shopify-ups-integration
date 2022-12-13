@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^8.2.0",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "https": "^1.0.0",
     "querystring": "^0.2.0",
     "ups-shipping": "^1.0.0"
